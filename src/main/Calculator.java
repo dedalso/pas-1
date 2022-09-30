@@ -62,6 +62,7 @@ public class Calculator
 	double result;
 	String operation;
 	String answer;
+	boolean resultPrinted = false;
 
 	public static void main(String[] args)
 	{
@@ -139,14 +140,17 @@ public class Calculator
 				{
 					public void actionPerformed(ActionEvent e)
 					{
+						if (resultPrinted)
+						{
+							textField.setText("");
+							resultPrinted = false;
+						}
 						String chosenNumber = button.getText();
 						String currentNumber = textField.getText();
 						
 						if (chosenNumber != "0")
-						{
 							textField.setText(currentNumber + chosenNumber);
-						}
-						else if (currentNumber != "" && currentNumber != "0")
+						else if (currentNumber != null && currentNumber != "0")
 							textField.setText(currentNumber + chosenNumber);
 					}
 				});
@@ -218,36 +222,32 @@ public class Calculator
 					{
 						String answer;
 						secondNumber = Double.parseDouble(textField.getText());
-
-						if (operation == "+")
+						String format = "#.#";
+						
+						switch (operation)
 						{
-							result = firstNumber + secondNumber;
-							answer = String.format("%.2f",result);
-							textField.setText(answer);
+							case "+":
+								result = firstNumber + secondNumber;
+								break;
+							case "-":
+								result = firstNumber - secondNumber;
+								break;
+							case "*":
+								result = firstNumber * secondNumber;
+								break;
+							case "/":
+								result = firstNumber / secondNumber;
 						}
-						else if (operation == "-")
+						
+						switch (operation)
 						{
-							result = firstNumber - secondNumber;
-							answer = String.format("%.2f",result);
-							textField.setText(answer);
-						}
-						else if (operation == "*")
-						{
-							result = firstNumber * secondNumber;
-							answer = String.format("%.2f",result);
-							textField.setText(answer);
-						}
-						else if (operation == "/")
-						{
-							result = firstNumber / secondNumber;
-							answer = String.format("%.2f",result);
-							textField.setText(answer);
-						}
-						else if (operation == "%")
-						{
-							result = firstNumber % secondNumber;
-							answer = String.format("%.2f",result);
-							textField.setText(answer);
+							case "+":
+							case "-":
+							case "*":
+							case "/":
+								answer = new java.text.DecimalFormat(format).format(result);
+								textField.setText(answer);
+								resultPrinted = true;
 						}
 					}
 				});
@@ -285,7 +285,8 @@ public class Calculator
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-				           System.exit(0);
+						frame.dispose();
+						System.exit(0);
 					}
 				});
 		}
@@ -465,7 +466,7 @@ public class Calculator
 		setButtonAppearance(buttonType.regular, appTheme.initial, buttonSpecialFrame);
 		JButton buttonExit = new JButton("Выход");
 		buttonExit.setBounds(14, 540, 437, 50);
-		setButtonEvent(buttonEvent.openSpecialFrame, buttonExit);
+		setButtonEvent(buttonEvent.exit, buttonExit);
 		setButtonAppearance(buttonType.regular, appTheme.initial, buttonExit);
 	}
 }
